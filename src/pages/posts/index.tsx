@@ -1,11 +1,24 @@
 import { GetStaticProps } from "next";
 import Head from "next/head";
 import Prismic from '@prismicio/client'
+import { RichText } from 'prismic-dom'
 
-import styles from './styles.module.scss'
 import { getPrismiClient } from "../../services/prismic";
 
-export default function Posts() {
+type Post = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  updatedAt: string;
+}
+
+type PostsProps = {
+  posts: Post[];
+}
+
+import styles from './styles.module.scss'
+
+export default function Posts({ posts }: PostsProps) {
   return (
     <>
       <Head>
@@ -14,30 +27,13 @@ export default function Posts() {
 
       <main className={styles.container}>
         <div className={styles.posts}>
-          <a href="">
-            <time>12 de março de 2021</time>
-            <strong>Creating a Monorepo with Lerna & Yarn Workspaces</strong>
-            <p>A static website contains Web pages with fixed content. Technically, it is a simple list of HTML files, which displays the same information to every visitor. Unlike dynamic websites, they do not require any back-end programming or database. Publishing a static website is easy: the files are uploaded on a simple Web server or storage provider. The two main advantages of static websites are security and speed: there is no database so it can not be hacked and there is no need to render a page for each request, which makes Web browsing faster.
-            </p>
-          </a>
-          <a href="">
-            <time>12 de março de 2021</time>
-            <strong>Creating a Monorepo with Lerna & Yarn Workspaces</strong>
-            <p>A static website contains Web pages with fixed content. Technically, it is a simple list of HTML files, which displays the same information to every visitor. Unlike dynamic websites, they do not require any back-end programming or database. Publishing a static website is easy: the files are uploaded on a simple Web server or storage provider. The two main advantages of static websites are security and speed: there is no database so it can not be hacked and there is no need to render a page for each request, which makes Web browsing faster.
-            </p>
-          </a>
-          <a href="">
-            <time>12 de março de 2021</time>
-            <strong>Creating a Monorepo with Lerna & Yarn Workspaces</strong>
-            <p>A static website contains Web pages with fixed content. Technically, it is a simple list of HTML files, which displays the same information to every visitor. Unlike dynamic websites, they do not require any back-end programming or database. Publishing a static website is easy: the files are uploaded on a simple Web server or storage provider. The two main advantages of static websites are security and speed: there is no database so it can not be hacked and there is no need to render a page for each request, which makes Web browsing faster.
-            </p>
-          </a>
-          <a href="">
-            <time>12 de março de 2021</time>
-            <strong>Creating a Monorepo with Lerna & Yarn Workspaces</strong>
-            <p>A static website contains Web pages with fixed content. Technically, it is a simple list of HTML files, which displays the same information to every visitor. Unlike dynamic websites, they do not require any back-end programming or database. Publishing a static website is easy: the files are uploaded on a simple Web server or storage provider. The two main advantages of static websites are security and speed: there is no database so it can not be hacked and there is no need to render a page for each request, which makes Web browsing faster.
-            </p>
-          </a>
+          {posts.map(({ slug, updatedAt, title, excerpt }) => (
+            <a key={slug} href='#'>
+              <time>{updatedAt}</time>
+              <strong>{title}</strong>
+              <p>{excerpt}</p>
+            </a>
+          ))}
         </div>
       </main>
     </>
@@ -54,9 +50,22 @@ export const getStaticProps: GetStaticProps = async () => {
     pageSize: 100,
   })
 
+  const posts = response.results.map(post => {
+    return {
+      slug: post.uid,
+      title: RichText.asText(post.data.title),
+      excerpt: post.data.content.find(content => content.type === 'paragraph')?.text ?? '',
+      updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })
+    }
+  })
+
   console.log(JSON.stringify(response, null, 2))
 
   return {
-    props: {}
+    props: { posts }
   }
 }
