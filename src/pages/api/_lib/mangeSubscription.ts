@@ -22,7 +22,7 @@ export async function saveSubscription(
     )
 
     const subscription = await stripe.subscriptions.retrieve(subscriptionId)
-console.log(subscription)
+    // console.log(subscription)
     const subscriptionData = {
       id: subscription.id,
       userId: userRef,
@@ -39,7 +39,7 @@ console.log(subscription)
         )
       )
     } else {
-      console.log(subscriptionData)
+      // console.log(subscriptionData)
       await fauna.query(
         q.Replace(
           q.Select(
