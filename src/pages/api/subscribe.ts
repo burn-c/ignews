@@ -16,14 +16,14 @@ type User = {
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     const session = await getSession({ req })
-    
+
     const user = await fauna.query<User>(
-     q.Get(
-       q.Match(
-         q.Index('user_by_email'),
-         q.Casefold(session.user.email)
-       )
-     )
+      q.Get(
+        q.Match(
+          q.Index('user_by_email'),
+          q.Casefold(session.user.email)
+        )
+      )
     )
 
     let customerId = user.data.stripe_customer_id
@@ -32,7 +32,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const stripeCustomer = await stripe.customers.create({
         email: session.user.email,
       })
-      
+
       await fauna.query(
         q.Update(
           q.Ref(q.Collection('users'), user.ref.id),
@@ -51,7 +51,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       payment_method_types: ['card'],
       billing_address_collection: 'required',
       line_items: [
-        { price : 'price_1Iatv0Jdu1vqvoNWBdxrH67M', quantity: 1 }
+        { price: 'price_1Iatv0Jdu1vqvoNWBdxrH67M', quantity: 1 }
       ],
       mode: 'subscription',
       allow_promotion_codes: true,
@@ -59,8 +59,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       cancel_url: process.env.STRIPE_CANCEL_URL
     })
 
-    return res.status(200).json({ sessionId: stripeCheckoutSession.id})
-    } else {
+    return res.status(200).json({ sessionId: stripeCheckoutSession.id })
+  } else {
     res.setHeader('Allow', 'POST')
     res.status(405).end('Method not allowed')
   }
