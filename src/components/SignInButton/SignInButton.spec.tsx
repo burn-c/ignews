@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { mocked } from 'ts-jest/utils'
 import { useSession } from 'next-auth/client'
+
 import { SignInButton } from "./index"
 
 jest.mock('next-auth/client')
@@ -12,9 +13,7 @@ describe('SignInButton component', () => {
 
     useSessionMocked.mockReturnValueOnce([null, false])
 
-    render(
-      <SignInButton />
-    )
+    render(<SignInButton />)
 
     expect(screen.getByText('Sign in with Github')).toBeInTheDocument()
   })
@@ -32,9 +31,7 @@ describe('SignInButton component', () => {
     ])
 
 
-    render(
-      <SignInButton />
-    )
+    render(<SignInButton />)
 
     expect(screen.getByText('John Doe')).toBeInTheDocument()
   })
