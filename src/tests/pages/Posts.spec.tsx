@@ -24,7 +24,7 @@ describe('Posts page', () => {
 
   it('loads initial data', async () => {
 
-    const getPrismicClientMocked = mocked(getPrismiClient)
+    const getPrismicClientMocked = jest.mocked(getPrismiClient)
 
     getPrismicClientMocked.mockReturnValueOnce({
       query: jest.fn().mockResolvedValueOnce({

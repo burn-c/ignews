@@ -22,7 +22,7 @@ describe('Home page', () => {
 
   it('loads initial data', async () => {
 
-    const retriveStripePricesMocked = mocked(stripe.prices.retrieve)
+    const retriveStripePricesMocked = jest.mocked(stripe.prices.retrieve)
 
     retriveStripePricesMocked.mockResolvedValueOnce({
       id: 'fake-price-id',
