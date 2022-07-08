@@ -1,4 +1,4 @@
-import { findByText, render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import { Async } from "."
 
 describe('Async tests', () => {
