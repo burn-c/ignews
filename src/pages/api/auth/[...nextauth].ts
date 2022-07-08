@@ -41,18 +41,20 @@ export default NextAuth({
               )
             ])
           )
-        )  
+        )
         console.log(userActiveSubscription)
 
-        return {...session, activeSubscription: userActiveSubscription}
+        // TODO: Fix type any
+        return { ...session, activeSubscription: userActiveSubscription } as any
 
       } catch {
-          return {
-            ...session,
-            activeSubscription: null
-          }
+        return {
+          ...session,
+          activeSubscription: null
+        }
       }
     },
+
     async signIn(user, account, profile) {
       const { email } = user
 
@@ -69,7 +71,7 @@ export default NextAuth({
             ),
             q.Create(
               q.Collection('users'),
-              { data: { email }}
+              { data: { email } }
             ),
             q.Get(
               q.Match(
