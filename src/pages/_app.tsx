@@ -10,6 +10,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <NextAuthProvider session={pageProps.session}>
       <Header />
       <Component {...pageProps} />
+      <footer>v0.2.0</footer>
     </NextAuthProvider>
   )
 }

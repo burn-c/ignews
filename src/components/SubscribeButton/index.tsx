@@ -38,13 +38,15 @@ export function SubscribeButton() {
 
   }
 
+  const ButtonText = session?.activeSubscription ? 'Go to Posts :) ' : 'Subscribe now'
+
   return (
     <button
       type="button"
       className={styles.subscribeButton}
       onClick={handleSubscribe}
     >
-      Subscribe now
+      {ButtonText}
     </button>
   )
 }

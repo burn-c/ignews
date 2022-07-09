@@ -21,14 +21,6 @@ interface PostPreviewProps {
 
 export default function PostPreview({ post }: PostPreviewProps) {
   const { title, content, updatedAt } = post
-  const [session] = useSession()
-  const router = useRouter()
-
-  useEffect(() => {
-    if (session?.activeSubscription) {
-      router.push(`/posts/${post.slug}`)
-    }
-  }, [session])
 
   return (
     <>
@@ -47,8 +39,8 @@ export default function PostPreview({ post }: PostPreviewProps) {
 
           <div className={styles.continueReading}>
             Wanna continue reading?
-            <Link href="">
-              <a href="">Subscribe now 🤗</a>
+            <Link href="/">
+              <a>Subscribe now 🤗</a>
             </Link>
           </div>
         </article>
@@ -74,9 +66,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const post = {
     slug,
-    title: RichText.asText(response.data.title),
-    content: RichText.asHtml(response.data.content.splice(0, 3)),
-    updatedAt: new Date(response.last_publication_date).toLocaleDateString('pt-BR', {
+    title: RichText.asText(response?.data?.title),
+    content: RichText.asHtml(response?.data?.content.splice(0, 3)),
+    updatedAt: new Date(response?.last_publication_date)?.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: 'long',
       year: 'numeric'

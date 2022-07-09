@@ -1,4 +1,5 @@
 import { GetStaticProps } from "next";
+import { useSession } from "next-auth/client"
 import Link from "next/link";
 import Head from "next/head";
 import Prismic from '@prismicio/client'
@@ -15,11 +16,16 @@ type Post = {
 
 type PostsProps = {
   posts: Post[];
+  hasActiveSubscription: boolean;
 }
 
 import styles from './styles.module.scss'
 
 export default function Posts({ posts }: PostsProps) {
+  const [session] = useSession()
+
+  const hasActiveSubscription = !!session?.activeSubscription
+
   return (
     <>
       <Head>
@@ -28,8 +34,8 @@ export default function Posts({ posts }: PostsProps) {
 
       <main className={styles.container}>
         <div className={styles.posts}>
-          {posts.map(({ slug, updatedAt, title, excerpt }) => (
-            <Link key={slug} href={`/posts/${slug}`}>
+          {posts?.map(({ slug, updatedAt, title, excerpt }) => (
+            <Link key={slug} href={hasActiveSubscription ? `/posts/${slug}` : `/posts/preview/${slug}`}>
               <a>
                 <time>{updatedAt}</time>
                 <strong>{title}</strong>

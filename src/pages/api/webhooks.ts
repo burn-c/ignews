@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "node:stream";
 import Stripe from "stripe";
+
 import { stripe } from "../../services/stripe";
 import { saveSubscription } from "./_lib/mangeSubscription";
 
@@ -38,6 +39,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       event = stripe.webhooks.constructEvent(buf, secret, process.env.STRIPE_WEBHOOK_SECRET);
     } catch (err) {
+      console.log(`❌ Error message: `, err);
       return res.status(400).send(`Webhook error: ${err.message}`);
     }
 
@@ -45,7 +47,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (relevantEvents.has(type)) {
       try {
-        switch ( type ) {
+        switch (type) {
           case 'customer.subscription.updated':
           case 'customer.subscription.deleted':
             console.log('Deleta mano')
@@ -57,7 +59,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
               false
             )
 
-          break;
+            break;
           case 'checkout.session.completed':
             const checkoutSession = event.data.object as Stripe.Checkout.Session
 
@@ -72,7 +74,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             throw new Error('Unhadled event.')
         }
       } catch (err) {
-        return res.json({error: 'Webhook handler failed.'})
+        return res.json({ error: 'Webhook handler failed.' })
       }
     }
 
